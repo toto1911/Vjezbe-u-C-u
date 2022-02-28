@@ -1,0 +1,234 @@
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
+#include<ctype.h>
+#include<time.h>
+
+#define MAX 21
+#define MIN 10
+#define BROJ 20
+#define NoviRed printf("\n")
+
+typedef struct NUMBERS
+{
+	int el;
+	int count;
+	struct NUMBERS *next;
+}numberList;
+
+void MakeList(numberList *);
+void Insert(numberList *);
+int GetRandom();
+void PrintList(numberList *);
+float CalculateAverage(numberList *);
+void DeleteAboveAverage(numberList *, float);
+void MakeNewList(numberList *, numberList *);
+int CountRepeat(numberList *);
+void FindPlace(numberList *, numberList);
+void MakeElement(numberList *, numberList);
+void DeleteAll(numberList *);
+
+void main()
+{
+	srand((unsigned)time(NULL));
+	numberList head1 = { 0 }, head2 = { 0 };
+	float listAverage = 0;
+	int unos = 0;
+
+	MakeList(&head1);
+	
+	PrintList(head1.next);
+
+	NoviRed;
+	NoviRed;
+
+	printf("Unesite ocjenu zadatka koji zelite izvrsiti:\t");
+	scanf("%d", &unos);
+
+	if(unos == 2)
+	{
+		printf("Average Number of the list: %f\n", listAverage = CalculateAverage(head1.next));
+		NoviRed;
+		DeleteAboveAverage(&head1, listAverage);
+		PrintList(head1.next);
+		NoviRed;
+	}
+	else if(unos == 5)
+	{
+		MakeNewList(head1.next, &head2);
+		PrintList(head2.next);
+	}
+	else
+	{
+		printf("Niste odabrali niti jedan zadatak");
+	}
+	DeleteAll(&head1);
+	DeleteAll(&head2);
+}
+
+void MakeList(numberList *number)
+{
+	numberList *headSave = number;
+	int i = 0;
+
+	for(i=0; i < BROJ; i++)
+	{
+		number = headSave;
+		Insert(number);
+	}
+}
+
+void Insert(numberList *number)
+{
+	numberList *temp = NULL;
+
+	temp = (numberList *)malloc(sizeof(numberList));
+	temp->el = GetRandom();
+	temp->count = 0;
+	temp->next = NULL;
+	while(number->next != NULL)
+	{
+		number = number->next;
+	}
+	number->next = temp;
+}
+
+int GetRandom()
+{
+	return (rand()%(MAX-MIN)+MIN);
+}
+
+void PrintList(numberList *number)
+{
+	while(number != NULL)
+	{
+		printf("%d - broj ponavljanja: %d\n", number->el, number->count);
+		number = number->next;
+	}
+}
+
+float CalculateAverage(numberList *number)
+{
+	int sum = 0;
+	float averageNumber = 1;
+
+	while(number != NULL)
+	{
+		sum += number->el;
+		number = number->next;
+	}
+
+	averageNumber = ((float)sum/(float)BROJ);
+	return averageNumber;
+}
+
+void DeleteAboveAverage(numberList *number, float averageNumber)
+{
+	numberList *temp = NULL;
+
+	while(number->next != NULL)
+	{
+		if(number->next->el > averageNumber)
+		{
+			temp = number->next;
+			number->next = temp->next;
+			free(temp);
+		}
+		else
+		{
+			number = number->next;
+		}
+	}
+
+}
+
+void MakeNewList(numberList *list1, numberList *list2)
+{
+	int counter = 0;
+	numberList *head1Save = list1;
+	numberList *head2Save = list2;
+	numberList temp = { 0 };
+
+	while(list1 != NULL)
+	{
+		list1->count = CountRepeat(list1);
+		
+		list1 = list1->next;
+	}
+
+	list1 = head1Save;
+
+	while(list1 != NULL)
+	{
+		if(list1->count != 0)
+		{
+			temp = (*list1);
+			list2 = head2Save;
+			FindPlace(list2, temp);
+		}
+		list1 = list1->next;
+	}
+	
+}
+
+int CountRepeat(numberList *list)
+{
+	int counter = 0, number = list->el;
+
+	while(list != NULL)
+	{
+		if(list->el == number && list->count != -1)
+		{
+			counter++;
+			list->count = -1;
+			list = list->next;
+		}
+		else
+		{
+			list = list->next;
+		}
+	}
+	return counter;
+}
+
+void FindPlace(numberList *list2, numberList temp)
+{
+	if(list2->next == NULL)
+	{
+		MakeElement(list2, temp);
+	}
+	else
+	{
+		while(list2->next != NULL && (list2->next->count >= temp.count) )
+		{
+			if(list2->count == temp.count && temp.el < list2->el)
+			{
+				list2 = list2->next;
+			}
+			list2 = list2->next;
+		}
+		MakeElement(list2, temp);
+	}
+}
+
+void MakeElement(numberList *list2, numberList temp)
+{
+	numberList *place = NULL;
+
+	place = (numberList *)malloc(sizeof(numberList));
+	*place = temp;
+	place->next = list2->next;
+	list2->next = place;
+}
+
+void DeleteAll(numberList *list)
+{
+	numberList *temp = NULL;
+
+	while(list->next != NULL)
+	{
+		temp = list->next;
+		list->next = temp->next;
+		free(temp);
+	}
+}
