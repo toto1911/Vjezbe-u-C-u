@@ -1,0 +1,128 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <string.h>
+#include <stdint.h>
+#include <malloc.h>
+
+typedef struct cvor* Pozicija;
+
+struct cvor {
+
+	int br;
+
+	Pozicija next;
+};
+
+void ispis(Pozicija);
+void stvori(int x, Pozicija);
+int randBr(Pozicija);
+Pozicija Trazi(int, Pozicija);
+void znamenka(Pozicija);
+
+int main() {
+
+
+	struct cvor head;
+	head.next = NULL;
+
+	stvori(randBr(&head), &head);
+	ispis(head.next);
+	znamenka(head.next);
+
+	return 0;
+
+}
+
+void ispis(Pozicija P) {
+
+	while (P != NULL) {
+
+		printf("%d ", P->br);
+
+		P = P->next;
+	}
+
+}
+void stvori(int x, Pozicija P){
+
+	Pozicija start = P;
+	Pozicija q;
+	Pozicija e;
+
+
+	for (int i = 0; i < 30; i++) {
+
+		q = (Pozicija)malloc(sizeof(struct cvor));
+		x = randBr(P);
+		P = start;
+		while (P->next != NULL && P->next->br < x)
+			P = P->next;
+		e = Trazi(x, P);
+
+		if (e == NULL) {
+
+			q->br = x;
+			q->next = P->next;
+			P->next = q;
+
+		}
+
+		else {
+			i = i - 1;
+		}
+
+	}
+}
+int randBr(Pozicija P) {
+
+
+	int a = (rand() % (99 - 55 + 1) + 55);
+
+	return a;
+
+}
+Pozicija Trazi(int x, Pozicija P) {
+
+	while (P != NULL && P->br != x)
+		P = P->next;
+
+	return P;
+}
+
+
+void znamenka(Pozicija P) {
+
+	int a, b;
+
+	FILE* fp;
+
+	fp = fopen("brojevi.txt", "w");
+
+	if (fp == NULL) {
+
+		printf("Datoteka nije otvorena!!!");
+		return;
+ 
+	}
+
+	while (P != NULL) {
+
+		a = P->br / 10;
+		if (a == 7) {
+
+			fprintf(fp, "%d\n", P->br);
+		}
+
+
+		b = P->br % 10;
+
+		if (b == 7) {
+
+			fprintf(fp, "%d\n", P->br);
+
+		}
+		P = P->next;
+
+	}
+	fclose(fp);
+}
