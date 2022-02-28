@@ -1,0 +1,274 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
+#include <time.h>
+#include <stdlib.h>
+#include <conio.h>
+#include <malloc.h>
+
+typedef struct cvor* Pozicija;
+
+struct cvor {
+
+	char ime[20];
+	char prezime[20];
+
+	int br_izlazaka;
+
+	Pozicija next;
+};
+
+void ispis(Pozicija);
+void stvori(Pozicija);
+void usporedba(Pozicija);
+void usporedba1(Pozicija);
+void usporedba2(Pozicija);
+int main() {
+
+	struct cvor head;
+	head.next = NULL;
+	stvori(&head);
+	usporedba(head.next);
+	usporedba1(head.next);
+	usporedba2(head.next);
+	ispis(head.next);
+	return 0;
+
+}
+
+void ispis(Pozicija P) {
+
+
+	while (P != NULL) {
+
+		if(P->br_izlazaka==4)
+	
+			printf("%s %s %d\n", P->ime, P->prezime, P->br_izlazaka);
+
+			P = P->next;
+		
+	}
+
+}
+
+void stvori(Pozicija P) {
+
+	Pozicija q;
+	FILE* fp;
+
+	int i = 0;
+	fp = fopen("1rok.txt", "r");
+
+
+	if (fp == NULL) {
+
+		printf("Datoteka nije otvorena");
+
+	}
+
+	while (!feof(fp)) {
+		q = (Pozicija)malloc(sizeof(struct cvor));
+		fscanf(fp, "%s %s", q->prezime, q->ime);
+		i++;
+		q->br_izlazaka = i;
+		q->next = P->next;
+		P->next = q;
+		i = 0;
+
+	}
+	fclose(fp);
+
+}
+
+
+void usporedba(Pozicija P) {
+
+	Pozicija Pocetak = P;
+
+	Pozicija q;
+	
+	int brojac = 0;
+
+	FILE* fp1;
+	char a[20];
+	char b[20];
+
+	int rez;
+	int i = 0;
+
+	fp1 = fopen("2rok.txt", "r");
+
+
+	if (fp1 == NULL) {
+
+		printf("Datoteka nije otvorena");
+
+	}
+
+	while (!feof(fp1)) {
+
+		fscanf(fp1, "%s %s", a, b);
+		
+
+		while (P != NULL) {
+
+			rez = strcmp(P->prezime, a);
+
+			if (rez == 0) {
+
+				brojac++;
+				P->br_izlazaka++;
+				
+			}
+			P = P->next;
+				
+		}
+
+			if (brojac == 0) {
+				i++;
+				P = Pocetak;
+				while (P->next != NULL)
+					P = P->next;
+				q = (Pozicija)malloc(sizeof(struct cvor));
+				strcpy(q->ime, b);
+				strcpy(q->prezime, a);
+				q->br_izlazaka = i;
+				q->next = P->next;
+				P->next = q;
+				i = 0;
+			}
+
+			
+		P = Pocetak;
+		brojac = 0;
+	}
+
+}
+void usporedba1(Pozicija P) {
+
+	Pozicija Pocetak = P;
+
+	Pozicija q;
+
+	int brojac = 0;
+	int i = 0;
+
+	FILE* fp2;
+	char a[20];
+	char b[20];
+
+	int rez;
+
+	fp2 = fopen("3rok.txt", "r");
+
+
+	if (fp2 == NULL) {
+
+		printf("Datoteka nije otvorena");
+
+	}
+
+	while (!feof(fp2)) {
+
+		fscanf(fp2, "%s %s", a, b);
+
+		while (P != NULL) {
+
+			rez = strcmp(P->prezime, a);
+
+			if (rez == 0) {
+
+				brojac++;
+				P->br_izlazaka++;
+
+			}
+
+			P = P->next;
+
+		}
+
+		if (brojac == 0) {
+			i++;
+			P = Pocetak;
+			while (P->next != NULL)
+				P = P->next;
+			q = (Pozicija)malloc(sizeof(struct cvor));
+			strcpy(q->ime, b);
+			strcpy(q->prezime, a);
+			q->br_izlazaka = i;
+			q->next = P->next;
+			P->next = q;
+			i = 0;
+		}
+
+
+		P = Pocetak;
+		brojac = 0;
+	}
+
+}
+
+void usporedba2(Pozicija P) {
+
+	Pozicija Pocetak = P;
+
+	Pozicija q;
+
+	int brojac = 0;
+
+	FILE* fp2;
+	char a[20];
+	char b[20];
+
+	int rez;
+
+	int i = 0;
+
+	fp2 = fopen("4rok.txt", "r");
+
+
+	if (fp2 == NULL) {
+
+		printf("Datoteka nije otvorena");
+
+	}
+
+	while (!feof(fp2)) {
+
+		fscanf(fp2, "%s %s", a, b);
+
+		while (P != NULL) {
+
+			rez = strcmp(P->prezime, a);
+
+			if (rez == 0) {
+
+				brojac++;
+				P->br_izlazaka++;
+			}
+
+			P = P->next;
+
+		}
+
+		if (brojac == 0) {
+			i++;
+			P = Pocetak;
+			while (P->next != NULL)
+				P = P->next;
+			q = (Pozicija)malloc(sizeof(struct cvor));
+			strcpy(q->ime, b);
+			strcpy(q->prezime, a);
+			q->br_izlazaka = i;
+			q->next = P->next;
+			P->next = q;
+			i = 0;
+		}
+
+
+		P = Pocetak;
+		brojac = 0;
+	}
+
+}
